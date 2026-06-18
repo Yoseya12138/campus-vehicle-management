@@ -86,3 +86,11 @@ database/schema.json
 database/indexes.json
 database/permissions.md
 ```
+
+---
+
+## ⭐ Star History
+
+如果这个项目对你有帮助，欢迎点个 Star 支持一下~
+
+[![Star History Chart](https://api.star-history.com/svg?repos=Yoseya12138/campus-vehicle-management&type=Date)](https://star-history.com/#Yoseya12138/campus-vehicle-management&Date)
