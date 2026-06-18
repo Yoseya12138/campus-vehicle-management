@@ -1,0 +1,11 @@
+.consent-card {
+  margin-top: 24rpx;
+}
+
+.consent-line {
+  display: flex;
+  align-items: flex-start;
+  gap: 14rpx;
+  color: #334155;
+  line-height: 1.6;
+}

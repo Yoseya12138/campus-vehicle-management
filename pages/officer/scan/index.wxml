@@ -1,0 +1,30 @@
+<view class="page">
+  <view class="hero">
+    <text class="hero-title">扫码查询</text>
+    <text class="hero-subtitle">扫描车辆二维码或输入二维码编号，查询动作将自动留痕。</text>
+  </view>
+
+  <view class="form-card">
+    <button class="primary-btn" bindtap="scanCode">扫码查询</button>
+
+    <view class="field">
+      <text class="label">二维码编号</text>
+      <input value="{{manualCode}}" bindinput="onInput" placeholder="支持编号、EBIKE:v1:xxx、带 token/scene 的链接" />
+    </view>
+    <button class="secondary-btn" bindtap="search">查询车辆</button>
+  </view>
+
+  <view class="notice">
+    <text>保卫科人员默认看到脱敏手机号；点击“查看完整手机号”会记录审计日志，便于保护个人信息。</text>
+  </view>
+
+  <view class="list-card">
+    <text class="section-title">最近查询日志</text>
+    <view wx:if="{{recentLogs.length === 0}}" class="empty">暂无扫码日志</view>
+    <view wx:for="{{recentLogs}}" wx:key="id" class="field">
+      <view class="kv"><text class="kv-label">时间</text><text class="kv-value">{{item.createdAt}}</text></view>
+      <view class="kv"><text class="kv-label">动作</text><text class="kv-value">{{item.action}} / {{item.success ? '成功' : '失败'}}</text></view>
+      <view class="kv"><text class="kv-label">二维码</text><text class="kv-value">{{item.token}}</text></view>
+    </view>
+  </view>
+</view>

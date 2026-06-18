@@ -1,0 +1,125 @@
+<view class="page">
+  <view class="hero">
+    <text class="hero-title">管理后台</text>
+    <text class="hero-subtitle">车辆审核、状态管理、扫码日志、违停处理与数据导出</text>
+  </view>
+
+  <view wx:if="{{denied}}" class="card">
+    <text class="section-title danger">无管理权限</text>
+    <text class="muted">需要管理员权限才能访问管理后台。</text>
+    <button class="primary-btn" bindtap="becomeAdmin">验证管理员身份</button>
+  </view>
+
+  <block wx:else>
+    <view class="grid stat-grid">
+      <view class="entry stat-card"><text class="entry-title">{{dashboard.vehicles}}</text><text class="entry-desc">车辆总数</text></view>
+      <view class="entry stat-card warn"><text class="entry-title">{{dashboard.pendingVehicles}}</text><text class="entry-desc">待审核车辆</text></view>
+      <view class="entry stat-card"><text class="entry-title">{{dashboard.students}}</text><text class="entry-desc">学生</text></view>
+      <view class="entry stat-card"><text class="entry-title">{{dashboard.teachers}}</text><text class="entry-desc">教职工</text></view>
+      <view class="entry stat-card danger-soft"><text class="entry-title">{{dashboard.pendingViolations}}</text><text class="entry-desc">待处理违停</text></view>
+      <view class="entry stat-card"><text class="entry-title">{{dashboard.logs}}</text><text class="entry-desc">扫码日志</text></view>
+    </view>
+
+    <view class="role-grid">
+      <button class="role-btn" bindtap="goRegisterStudent">新增学生车辆</button>
+      <button class="role-btn" bindtap="goRegisterTeacher">新增教职工车辆</button>
+    </view>
+
+    <view class="filter-card">
+      <input class="search-input" value="{{keyword}}" placeholder="搜索姓名、学号/工号、手机号、品牌、编号、二维码" bindinput="onSearchInput" />
+      <view class="filter-row">
+        <picker mode="selector" range="{{ownerTypeOptions}}" value="{{ownerTypeIndex}}" bindchange="changeOwnerType">
+          <view class="filter-chip">{{ownerTypeOptions[ownerTypeIndex]}}</view>
+        </picker>
+        <picker mode="selector" range="{{reviewOptions}}" value="{{reviewIndex}}" bindchange="changeReview">
+          <view class="filter-chip">{{reviewOptions[reviewIndex]}}</view>
+        </picker>
+        <picker mode="selector" range="{{statusOptions}}" value="{{statusIndex}}" bindchange="changeStatus">
+          <view class="filter-chip">{{statusOptions[statusIndex]}}</view>
+        </picker>
+        <button class="mini-clear" bindtap="clearFilters">清空</button>
+      </view>
+    </view>
+
+    <view class="list-card">
+      <view class="section-head">
+        <text class="section-title inline-title">车辆审核与管理</text>
+        <text class="muted">共 {{vehicles.length}} 条</text>
+      </view>
+      <view wx:if="{{vehicles.length === 0}}" class="empty">暂无匹配车辆</view>
+      <view wx:for="{{vehicles}}" wx:key="id" class="record-card">
+        <view class="record-head">
+          <text class="record-title">{{item.ownerTypeText}}：{{item.name}}</text>
+          <view>
+            <text class="badge {{item.reviewStatus === 'pending' ? 'badge-warn' : item.reviewStatus === 'rejected' ? 'badge-danger' : 'badge-ok'}}">{{item.reviewStatusText}}</text>
+            <text class="badge {{item.status === 'revoked' ? 'badge-danger' : 'badge-ok'}}">{{item.statusText}}</text>
+          </view>
+        </view>
+        <view class="kv"><text class="kv-label">{{item.ownerNoLabel}}</text><text class="kv-value">{{item.ownerNo}}</text></view>
+        <view class="kv"><text class="kv-label">单位</text><text class="kv-value">{{item.org || '未填写'}} {{item.classOrTitle || ''}}</text></view>
+        <view class="kv"><text class="kv-label">联系方式</text><text class="kv-value">{{item.phoneMasked}}</text></view>
+        <view class="kv"><text class="kv-label">车辆</text><text class="kv-value">{{item.vehicleType}} / {{item.color}} {{item.brand}} / {{item.plateNo || '未填写'}}</text></view>
+        <view class="kv"><text class="kv-label">区域</text><text class="kv-value">{{item.campusArea || '未填写'}}</text></view>
+        <view class="kv"><text class="kv-label">二维码</text><text class="kv-value">{{item.token}}</text></view>
+        <view class="action-row">
+          <button class="action-btn ok" data-id="{{item.id}}" bindtap="approveVehicle">通过</button>
+          <button class="action-btn" data-id="{{item.id}}" bindtap="rejectVehicle">驳回</button>
+          <button wx:if="{{item.status !== 'revoked'}}" class="action-btn danger-action" data-id="{{item.id}}" bindtap="revokeVehicle">作废</button>
+          <button wx:else class="action-btn ok" data-id="{{item.id}}" bindtap="restoreVehicle">恢复</button>
+        </view>
+      </view>
+    </view>
+
+    <view class="list-card">
+      <text class="section-title">违停处理</text>
+      <view wx:if="{{violations.length === 0}}" class="empty">暂无违停记录</view>
+      <view wx:for="{{violations}}" wx:key="id" class="record-card">
+        <view class="record-head">
+          <text class="record-title">{{item.ownerType}} {{item.ownerName}}</text>
+          <text class="badge {{item.status === 'pending' ? 'badge-warn' : item.status === 'ignored' ? 'badge-danger' : 'badge-ok'}}">{{item.statusText}}</text>
+        </view>
+        <view class="kv"><text class="kv-label">时间</text><text class="kv-value">{{item.createdAt}}</text></view>
+        <view class="kv"><text class="kv-label">地点</text><text class="kv-value">{{item.location}}</text></view>
+        <view class="kv"><text class="kv-label">二维码</text><text class="kv-value">{{item.token}}</text></view>
+        <view class="kv"><text class="kv-label">备注</text><text class="kv-value">{{item.remark || '无'}}</text></view>
+        <view class="action-row">
+          <button class="action-btn ok" data-id="{{item.id}}" data-status="resolved" bindtap="updateViolationStatus">标记已处理</button>
+          <button class="action-btn" data-id="{{item.id}}" data-status="ignored" bindtap="updateViolationStatus">忽略</button>
+        </view>
+      </view>
+    </view>
+
+    <view class="list-card compact-list">
+      <text class="section-title">学生信息</text>
+      <view wx:if="{{students.length === 0}}" class="empty">暂无学生记录</view>
+      <view wx:for="{{students}}" wx:key="id" class="field">
+        <view class="kv"><text class="kv-label">姓名</text><text class="kv-value">{{item.name}} / {{item.studentNo}}</text></view>
+        <view class="kv"><text class="kv-label">学院班级</text><text class="kv-value">{{item.college}} / {{item.className}}</text></view>
+        <view class="kv"><text class="kv-label">手机号</text><text class="kv-value">{{item.phone}}</text></view>
+      </view>
+    </view>
+
+    <view class="list-card compact-list">
+      <text class="section-title">教职工信息</text>
+      <view wx:if="{{teachers.length === 0}}" class="empty">暂无教职工记录</view>
+      <view wx:for="{{teachers}}" wx:key="id" class="field">
+        <view class="kv"><text class="kv-label">姓名</text><text class="kv-value">{{item.name}} / {{item.employeeNo}}</text></view>
+        <view class="kv"><text class="kv-label">部门职务</text><text class="kv-value">{{item.department}} / {{item.title}}</text></view>
+        <view class="kv"><text class="kv-label">手机号</text><text class="kv-value">{{item.phone}}</text></view>
+      </view>
+    </view>
+
+    <view class="list-card compact-list">
+      <text class="section-title">扫码日志</text>
+      <view wx:if="{{logs.length === 0}}" class="empty">暂无日志</view>
+      <view wx:for="{{logs}}" wx:key="id" class="field">
+        <view class="kv"><text class="kv-label">时间</text><text class="kv-value">{{item.createdAt}}</text></view>
+        <view class="kv"><text class="kv-label">操作</text><text class="kv-value">{{item.operatorName}} / {{item.action}} / {{item.success ? '成功' : '失败'}}</text></view>
+        <view class="kv"><text class="kv-label">对象</text><text class="kv-value">{{item.ownerType}} {{item.ownerName}} / {{item.token}}</text></view>
+      </view>
+    </view>
+
+    <button class="secondary-btn" bindtap="copyExport">导出 JSON</button>
+    <button class="secondary-btn" bindtap="copyCsv">导出 CSV</button>
+  </block>
+</view>

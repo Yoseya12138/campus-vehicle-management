@@ -1,0 +1,101 @@
+{
+  "indexes": [
+    {
+      "collection": "students",
+      "fields": [
+        { "fieldPath": "openid", "order": "asc" },
+        { "fieldPath": "createdAt", "order": "desc" }
+      ]
+    },
+    {
+      "collection": "students",
+      "fields": [
+        { "fieldPath": "studentNo", "order": "asc" }
+      ]
+    },
+    {
+      "collection": "teachers",
+      "fields": [
+        { "fieldPath": "openid", "order": "asc" },
+        { "fieldPath": "createdAt", "order": "desc" }
+      ]
+    },
+    {
+      "collection": "teachers",
+      "fields": [
+        { "fieldPath": "employeeNo", "order": "asc" }
+      ]
+    },
+    {
+      "collection": "vehicles",
+      "fields": [
+        { "fieldPath": "tokenHash", "order": "asc" }
+      ],
+      "unique": true
+    },
+    {
+      "collection": "vehicles",
+      "fields": [
+        { "fieldPath": "ownerType", "order": "asc" },
+        { "fieldPath": "ownerId", "order": "asc" },
+        { "fieldPath": "status", "order": "asc" }
+      ]
+    },
+    {
+      "collection": "vehicles",
+      "fields": [
+        { "fieldPath": "reviewStatus", "order": "asc" },
+        { "fieldPath": "createdAt", "order": "desc" }
+      ]
+    },
+    {
+      "collection": "officers",
+      "fields": [
+        { "fieldPath": "openid", "order": "asc" }
+      ],
+      "unique": true
+    },
+    {
+      "collection": "scanLogs",
+      "fields": [
+        { "fieldPath": "operatorId", "order": "asc" },
+        { "fieldPath": "createdAt", "order": "desc" }
+      ]
+    },
+    {
+      "collection": "scanLogs",
+      "fields": [
+        { "fieldPath": "vehicleId", "order": "asc" },
+        { "fieldPath": "createdAt", "order": "desc" }
+      ]
+    },
+    {
+      "collection": "violations",
+      "fields": [
+        { "fieldPath": "vehicleId", "order": "asc" },
+        { "fieldPath": "createdAt", "order": "desc" }
+      ]
+    },
+    {
+      "collection": "violations",
+      "fields": [
+        { "fieldPath": "status", "order": "asc" },
+        { "fieldPath": "createdAt", "order": "desc" }
+      ]
+    },
+    {
+      "collection": "rateLimits",
+      "fields": [
+        { "fieldPath": "expiresAt", "order": "asc" }
+      ],
+      "ttl": true
+    },
+    {
+      "collection": "securityEvents",
+      "fields": [
+        { "fieldPath": "eventType", "order": "asc" },
+        { "fieldPath": "createdAt", "order": "desc" }
+      ]
+    }
+  ]
+}

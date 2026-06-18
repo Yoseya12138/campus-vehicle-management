@@ -1,0 +1,138 @@
+{
+  "collections": {
+    "students": {
+      "description": "学生车主信息",
+      "fields": {
+        "openid": "string，学生微信 openid，用于本人车辆查询",
+        "name": "string，姓名",
+        "studentNo": "string，学号",
+        "college": "string，学院",
+        "className": "string，班级",
+        "phone": "string，手机号",
+        "verified": "boolean，是否已认证",
+        "reviewStatus": "pending|approved|rejected",
+        "createdAt": "Date",
+        "updatedAt": "Date"
+      },
+      "indexes": ["openid", "studentNo", "reviewStatus", "createdAt"]
+    },
+    "teachers": {
+      "description": "教职工车主信息",
+      "fields": {
+        "openid": "string，教职工微信 openid",
+        "name": "string，姓名",
+        "employeeNo": "string，工号",
+        "department": "string，部门/学院",
+        "title": "string，职务/身份",
+        "phone": "string，手机号",
+        "verified": "boolean，是否已认证",
+        "reviewStatus": "pending|approved|rejected",
+        "createdAt": "Date",
+        "updatedAt": "Date"
+      },
+      "indexes": ["openid", "employeeNo", "reviewStatus", "createdAt"]
+    },
+    "vehicles": {
+      "description": "车辆信息与二维码绑定",
+      "fields": {
+        "ownerType": "student|teacher",
+        "ownerId": "string，对应 students/teachers 文档 _id",
+        "vehicleType": "string，车辆类型",
+        "plateNo": "string，校内编号/车牌号",
+        "brand": "string，品牌",
+        "color": "string，颜色",
+        "campusArea": "string，校区/停放区域",
+        "photoFileId": "string，云存储文件 ID",
+        "tokenHash": "string，HMAC-SHA256 后的二维码 token，不保存明文 token",
+        "tokenSuffix": "string，token 后 6 位，用于人工核对",
+        "status": "active|revoked|deleted",
+        "reviewStatus": "pending|approved|rejected",
+        "createdByOpenid": "string",
+        "createdAt": "Date",
+        "updatedAt": "Date",
+        "revokedAt": "Date"
+      },
+      "indexes": ["tokenHash unique", "ownerType+ownerId", "status", "reviewStatus", "createdAt"]
+    },
+    "officers": {
+      "description": "保卫科/管理员权限人员",
+      "fields": {
+        "openid": "string，工作人员微信 openid",
+        "name": "string，姓名",
+        "department": "string，部门",
+        "role": "admin|officer",
+        "permissions": "array，如 VIEW_FULL_PHONE、EXPORT_DATA、REVOKE_VEHICLE",
+        "enabled": "boolean",
+        "createdAt": "Date",
+        "updatedAt": "Date"
+      },
+      "indexes": ["openid unique", "role", "enabled"]
+    },
+    "scanLogs": {
+      "description": "扫码、查询、查看完整手机号、导出等审计日志",
+      "fields": {
+        "openid": "string，操作人 openid",
+        "operatorId": "string，officers _id",
+        "operatorName": "string",
+        "operatorRole": "string",
+        "action": "string",
+        "tokenHash": "string",
+        "vehicleId": "string",
+        "ownerType": "string",
+        "ownerName": "string",
+        "success": "boolean",
+        "ip": "string",
+        "userAgent": "string",
+        "remark": "string",
+        "createdAt": "Date"
+      },
+      "indexes": ["operatorId", "vehicleId", "action", "createdAt"]
+    },
+    "violations": {
+      "description": "违停记录",
+      "fields": {
+        "vehicleId": "string",
+        "tokenHash": "string",
+        "tokenSuffix": "string",
+        "ownerType": "string",
+        "ownerName": "string",
+        "location": "string",
+        "remark": "string",
+        "photoFileId": "string",
+        "status": "pending|done|cancelled",
+        "operatorOpenid": "string",
+        "operatorId": "string",
+        "operatorName": "string",
+        "createdAt": "Date",
+        "updatedAt": "Date"
+      },
+      "indexes": ["vehicleId", "status", "operatorId", "createdAt"]
+    },
+    "rateLimits": {
+      "description": "接口限流桶，可设置 TTL 自动清理",
+      "fields": {
+        "action": "string",
+        "openidHash": "string",
+        "bucket": "number",
+        "count": "number",
+        "limit": "number",
+        "expiresAt": "Date",
+        "createdAt": "Date",
+        "updatedAt": "Date"
+      },
+      "indexes": ["action+openidHash+bucket", "expiresAt TTL"]
+    },
+    "securityEvents": {
+      "description": "安全事件日志",
+      "fields": {
+        "eventType": "string",
+        "openid": "string",
+        "operatorId": "string",
+        "operatorRole": "string",
+        "detail": "object",
+        "createdAt": "Date"
+      },
+      "indexes": ["eventType", "operatorId", "createdAt"]
+    }
+  }
+}

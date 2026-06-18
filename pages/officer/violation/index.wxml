@@ -1,0 +1,41 @@
+<view class="page">
+  <view class="hero">
+    <text class="hero-title">登记违停记录</text>
+    <text class="hero-subtitle">记录地点、备注和现场照片，便于后续处理留痕。</text>
+  </view>
+
+  <view wx:if="{{denied}}" class="card">
+    <text class="section-title danger">无权限操作</text>
+    <text class="muted">请切换为保卫科或管理员身份。</text>
+  </view>
+
+  <block wx:elif="{{vehicle}}">
+    <view class="list-card">
+      <view class="kv"><text class="kv-label">车辆</text><text class="kv-value">{{vehicle.color}} {{vehicle.brand}}</text></view>
+      <view class="kv"><text class="kv-label">车主</text><text class="kv-value">{{vehicle.ownerTypeText}}：{{vehicle.name}}</text></view>
+      <view class="kv"><text class="kv-label">{{vehicle.ownerNoLabel}}</text><text class="kv-value">{{vehicle.ownerNo}}</text></view>
+      <view class="kv"><text class="kv-label">编号</text><text class="kv-value">{{vehicle.plateNo || '未填写'}}</text></view>
+    </view>
+
+    <form bindsubmit="onSubmit">
+      <view class="form-card">
+        <view class="field">
+          <text class="label">违停地点 *</text>
+          <input name="location" placeholder="例如：图书馆东门消防通道" />
+        </view>
+        <view class="field">
+          <text class="label">备注</text>
+          <textarea name="remark" placeholder="可填写处理说明、通知情况等" />
+        </view>
+        <view class="field">
+          <text class="label">现场照片</text>
+          <button class="secondary-btn" type="default" bindtap="chooseImage">选择/拍摄照片</button>
+          <image wx:if="{{imagePath}}" class="preview-img" src="{{imagePath}}" mode="aspectFill" />
+        </view>
+      </view>
+      <button class="danger-btn" formType="submit">提交违停记录</button>
+    </form>
+  </block>
+
+  <view wx:else class="empty">车辆不存在</view>
+</view>

@@ -1,0 +1,9 @@
+{
+  "name": "campus-vehicle-api",
+  "version": "1.0.0",
+  "description": "校园车辆管理系统云函数 API",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "latest"
+  }
+}

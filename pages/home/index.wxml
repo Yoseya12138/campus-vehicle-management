@@ -1,0 +1,29 @@
+<view class="page">
+  <view class="hero">
+    <text class="hero-title">校园车辆管理系统</text>
+    <text class="hero-subtitle">车辆登记、二维码识别、违停记录与后台管理</text>
+  </view>
+
+  <view class="grid">
+    <view class="entry" bindtap="goStudent">
+      <text class="entry-title">学生车辆登记</text>
+      <text class="entry-desc">登记学生车主信息与车辆信息</text>
+    </view>
+    <view class="entry" bindtap="goTeacher">
+      <text class="entry-title">教职工车辆登记</text>
+      <text class="entry-desc">登记教职工车主信息与车辆信息</text>
+    </view>
+    <view class="entry" bindtap="goQr">
+      <text class="entry-title">车辆二维码</text>
+      <text class="entry-desc">查看车辆二维码与绑定信息</text>
+    </view>
+    <view class="entry" bindtap="goOfficer">
+      <text class="entry-title">扫码查询</text>
+      <text class="entry-desc">扫码识别车辆及车主信息</text>
+    </view>
+    <view class="entry" bindtap="goAdmin">
+      <text class="entry-title">管理后台</text>
+      <text class="entry-desc">车辆、日志、违停记录管理</text>
+    </view>
+  </view>
+</view>

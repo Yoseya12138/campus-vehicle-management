@@ -1,0 +1,13 @@
+<view class="page">
+  <view class="hero">
+    <text class="hero-title">二维码访问</text>
+    <text class="hero-subtitle">车辆二维码信息识别</text>
+  </view>
+
+  <view class="card">
+    <view class="kv"><text class="kv-label">当前身份</text><text class="kv-value">{{roleName}}</text></view>
+    <view class="kv"><text class="kv-label">二维码编号</text><text class="kv-value">{{token || '未携带'}}</text></view>
+    <view wx:if="{{!canView}}" class="notice">当前账号无权查看车主信息。</view>
+    <button class="primary-btn" bindtap="goHome">返回首页</button>
+  </view>
+</view>

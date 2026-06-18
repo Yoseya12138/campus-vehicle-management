@@ -1,0 +1,20 @@
+{
+  "pages": [
+    "pages/home/index",
+    "pages/student/form/index",
+    "pages/student/qrcode/index",
+    "pages/officer/scan/index",
+    "pages/officer/detail/index",
+    "pages/officer/violation/index",
+    "pages/admin/index",
+    "pages/scan/index"
+  ],
+  "window": {
+    "navigationBarTitleText": "校园车辆管理系统",
+    "navigationBarBackgroundColor": "#1E5AA8",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#F4F7FB"
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

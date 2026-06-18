@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>校园车辆管理系统 - 管理后台</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-logo">车</div>
+        <div>
+          <h1>校园车辆后台</h1>
+          <p>Vehicle QR Admin</p>
+        </div>
+      </div>
+      <nav class="nav">
+        <button class="nav-item active" data-view="dashboard">总览</button>
+        <button class="nav-item" data-view="vehicles">车辆管理</button>
+        <button class="nav-item" data-view="violations">违停管理</button>
+        <button class="nav-item" data-view="people">人员管理</button>
+        <button class="nav-item" data-view="logs">审计日志</button>
+        <button class="nav-item" data-view="settings">接口配置</button>
+      </nav>
+      <div class="side-note">
+        <strong>管理后台</strong>
+        <span>配置后端接口地址后可连接云端数据进行管理。</span>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <h2 id="pageTitle">总览</h2>
+          <p id="pageSubtitle">车辆登记、审核、扫码日志与违停闭环管理</p>
+        </div>
+        <div class="top-actions">
+          <button class="ghost-btn" id="refreshBtn">刷新</button>
+          <button class="primary-btn" id="exportBtn">导出数据</button>
+        </div>
+      </header>
+
+      <section class="view active" id="view-dashboard">
+        <div class="stats-grid" id="statsGrid"></div>
+        <div class="panel-grid">
+          <section class="panel">
+            <div class="panel-head">
+              <h3>待审核车辆</h3>
+              <span id="pendingCount" class="pill warn">0</span>
+            </div>
+            <div id="pendingVehicleList" class="mini-list"></div>
+          </section>
+          <section class="panel">
+            <div class="panel-head">
+              <h3>待处理违停</h3>
+              <span id="pendingViolationCount" class="pill danger">0</span>
+            </div>
+            <div id="pendingViolationList" class="mini-list"></div>
+          </section>
+        </div>
+      </section>
+
+      <section class="view" id="view-vehicles">
+        <section class="panel">
+          <div class="panel-head stackable">
+            <div>
+              <h3>车辆增删改查</h3>
+              <p class="panel-desc">支持按关键词、车主类型、审核状态、车辆状态查询。</p>
+            </div>
+            <button class="primary-btn" data-action="addVehicle">新增车辆</button>
+          </div>
+          <div class="toolbar">
+            <input id="vehicleKeyword" placeholder="搜索姓名、学号/工号、手机号、车辆、二维码" />
+            <select id="ownerFilter">
+              <option value="all">全部车主</option>
+              <option value="student">学生</option>
+              <option value="teacher">教职工</option>
+            </select>
+            <select id="reviewFilter">
+              <option value="all">全部审核</option>
+              <option value="pending">待审核</option>
+              <option value="approved">已通过</option>
+              <option value="rejected">已驳回</option>
+            </select>
+            <select id="statusFilter">
+              <option value="all">全部状态</option>
+              <option value="active">正常</option>
+              <option value="revoked">已作废</option>
+            </select>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>车主</th><th>车辆</th><th>二维码</th><th>审核</th><th>状态</th><th>操作</th></tr></thead>
+              <tbody id="vehicleTable"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <section class="view" id="view-violations">
+        <section class="panel">
+          <div class="panel-head stackable">
+            <div>
+              <h3>违停增删改查</h3>
+              <p class="panel-desc">可新增违停记录、修改处理状态或删除误录记录。</p>
+            </div>
+            <button class="primary-btn" data-action="addViolation">新增违停</button>
+          </div>
+          <div class="toolbar two-col">
+            <input id="violationKeyword" placeholder="搜索车主、地点、备注、二维码" />
+            <select id="violationStatusFilter">
+              <option value="all">全部状态</option>
+              <option value="pending">待处理</option>
+              <option value="processing">处理中</option>
+              <option value="resolved">已处理</option>
+              <option value="ignored">已忽略</option>
+            </select>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>时间</th><th>车主</th><th>地点</th><th>备注</th><th>状态</th><th>操作</th></tr></thead>
+              <tbody id="violationTable"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <section class="view" id="view-people">
+        <div class="people-actions">
+          <button class="primary-btn" data-action="addStudent">新增学生</button>
+          <button class="primary-btn" data-action="addTeacher">新增教职工</button>
+          <button class="primary-btn" data-action="addOfficer">新增管理员/保卫科</button>
+        </div>
+        <div class="panel-grid">
+          <section class="panel">
+            <div class="panel-head"><h3>学生</h3><span id="studentCount" class="pill">0</span></div>
+            <input class="section-search" id="studentKeyword" placeholder="搜索学生姓名、学号、学院、手机号" />
+            <div id="studentList" class="mini-list"></div>
+          </section>
+          <section class="panel">
+            <div class="panel-head"><h3>教职工</h3><span id="teacherCount" class="pill">0</span></div>
+            <input class="section-search" id="teacherKeyword" placeholder="搜索教职工姓名、工号、部门、手机号" />
+            <div id="teacherList" class="mini-list"></div>
+          </section>
+          <section class="panel full-span">
+            <div class="panel-head"><h3>管理人员</h3><span id="officerCount" class="pill">0</span></div>
+            <input class="section-search" id="officerKeyword" placeholder="搜索管理员/保卫科姓名、部门、角色" />
+            <div id="officerList" class="mini-list horizontal"></div>
+          </section>
+        </div>
+      </section>
+
+      <section class="view" id="view-logs">
+        <section class="panel">
+          <div class="panel-head stackable">
+            <div>
+              <h3>审计日志</h3>
+              <p class="panel-desc">记录扫码、查看手机号、后台增删改等操作。支持查询与删除。</p>
+            </div>
+            <button class="primary-btn" data-action="addLog">手动新增日志</button>
+          </div>
+          <div class="toolbar two-col">
+            <input id="logKeyword" placeholder="搜索操作人、动作、对象、二维码" />
+            <select id="logResultFilter">
+              <option value="all">全部结果</option>
+              <option value="true">成功</option>
+              <option value="false">失败</option>
+            </select>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>时间</th><th>操作人</th><th>动作</th><th>对象</th><th>结果</th><th>操作</th></tr></thead>
+              <tbody id="logTable"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <section class="view" id="view-settings">
+        <section class="panel settings-panel">
+          <h3>接口配置</h3>
+          <p>配置云函数 HTTP 化地址或自有后端 REST API 地址，实现与云端数据联动。</p>
+          <label>API Base URL</label>
+          <input id="apiBaseUrl" placeholder="例如：https://xxx.service.tcloudbase.com/api 或 /api" />
+          <label>管理员 Token / Cookie 方案说明</label>
+          <textarea id="apiToken" placeholder="填入后端签发的 Bearer Token"></textarea>
+          <div class="switch-line">
+            <input type="checkbox" id="apiMode" />
+            <span>启用真实接口模式</span>
+          </div>
+          <button class="primary-btn" id="saveConfigBtn">保存配置</button>
+          <pre class="code-block">POST {baseUrl}
+{
+  "action": "adminList",
+  "payload": { "collection": "vehicles", "page": 1, "pageSize": 50 }
+}</pre>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal-mask" id="modalMask" hidden>
+    <div class="modal">
+      <div class="modal-head">
+        <h3 id="modalTitle">编辑</h3>
+        <button class="modal-close" id="modalCloseBtn">×</button>
+      </div>
+      <form id="modalForm" class="modal-form"></form>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <script src="./app.js"></script>
+</body>
+</html>
